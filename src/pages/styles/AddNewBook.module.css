@@ -1,0 +1,41 @@
+.wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color:#fff;
+    z-index: 999;
+}
+
+form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+form > button:nth-child(1) {
+    width: 50px;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    border: none;
+    background-color: transparent;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+form h1 {
+    font-size: 2rem;
+    font-weight:600;
+}
+
+form input {
+    width: 300px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
