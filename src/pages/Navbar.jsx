@@ -21,25 +21,23 @@ export default function Navbar() {
     const handleDelete = async (id) => {
         dispatch(deleteCategory(id));
         dispatch(fetchCategories());
-        const { data } = await axios.get(`http://localhost:5000/api/books`);
-        dispatch(bookSuccess({ type: "b", data }));
     };
 
     const toggleEditButtons = () => {
         setShowEditButtons(!showEditButtons);
     };
 
-    const handleClickTakeAll = async () => {
-        try {
-            dispatch(bookStart());
-            const { data } = await axios.get(`http://localhost:5000/api/books`);
-            setCurrentActive("all");
-            dispatch(bookSuccess({ type: "b", data }));
-        } catch (error) {
-            console.log(error);
-            dispatch(bookFailure(error.message));
-        }
-    }
+    // const handleClickTakeAll = async () => {
+    //     try {
+    //         dispatch(bookStart());
+    //         const { data } = await axios.get(`http://localhost:5000/api/books`);
+    //         setCurrentActive("all");
+    //         dispatch(bookSuccess({ type: "b", data }));
+    //     } catch (error) {
+    //         console.log(error);
+    //         dispatch(bookFailure(error.message));
+    //     }
+    // }
 
     const handleClickGenre = async (genre) => {
         try {

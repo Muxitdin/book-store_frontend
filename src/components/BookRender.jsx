@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import s from "../pages/styles/BookRenderer.module.css";
 
 function BookRender({ books, isLoading }) {
+
+    useEffect(() => {
+        const getAllBooks = async () => {
+            const { data } = await axios.get(`http://localhost:5000/api/books`);
+            dispatch(bookSuccess({ type: "b", data }));
+        }
+        getAllBooks();
+    },[books])
+
     return (
         <div className={s.wrapper}>
             {
