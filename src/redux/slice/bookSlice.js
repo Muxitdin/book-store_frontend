@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import Service from "../../config/service.js";
 
 const initialState = {
     isLoading: false,
@@ -27,6 +28,9 @@ const BookSlice = createSlice({
         bookFailure: (state, action) => {
             state.isLoading = false;
             state.isError = action;
+        },
+        deleteBookSuccess: (state, action) => {
+            state.books = state.books.filter((book) => book._id !== action.payload);
         }
     },
 });

@@ -1,18 +1,22 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories, deleteCategory, updateCategory } from "../redux/slice/categorySlice";
 import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice";
+import { fetchCategories, deleteCategory, updateCategory } from "../redux/slice/categorySlice";
+import Service from "../config/service.js";
 import UpdateCategory from "../components/UpdateCategory";
 import s from "./styles/Navbar.module.css";
-import axios from "axios";
 
 export default function Navbar() {
     const dispatch = useDispatch();
-    const { categories, isLoading } = useSelector(state => state.category);  // and here i also use isLoading instead of loading
+    const { categories, isLoading } = useSelector(state => state.category);
+    const { auth, isLoggedIn } = useSelector(state => state.auth);
     const [editModal, setEditModal] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [showEditButtons, setShowEditButtons] = useState(false); // State for toggling buttons
     const [currentActive, setCurrentActive] = useState(""); // State for active genre button
+
+    console.log(isLoggedIn, auth?.role)
 
     useEffect(() => {
         dispatch(fetchCategories());
@@ -42,9 +46,9 @@ export default function Navbar() {
     const handleClickGenre = async (genre) => {
         try {
             dispatch(bookStart());
-            const { data } = await axios.get("http://localhost:5000/api/books/filter", { params: { category: genre } })
-            setCurrentActive(genre);
+            const data = await Service.getAllBooksFilter({ params: { category: genre } });
             dispatch(bookSuccess({ type: "b", data }));
+            setCurrentActive(genre);
         } catch (error) {
             console.log(error);
             dispatch(bookFailure(error.message));
@@ -58,17 +62,28 @@ export default function Navbar() {
     return (
         <div className={s.wrapper}>
             <div className={s.upperNav}>
-                <ul className="nav justify-content-center">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/wishlist">Wish List</a></li>
-                    <li><a href="/signup">Create an Account</a></li>
-                    <li><a href="/signin">LogIn</a></li>
+                <ul className="nav justify-content-between">
+                    <div>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/wishlist">Wish List</a></li>
+                    </div>
+                    { isLoggedIn && auth?.role ? (
+                        <div>
+                            <div className={s.profileInfo} ><p>{`${auth?.fullName}`}</p><p>{`${auth?.role}`}</p></div>
+                            <li className={s.profileIcon}><a href="/profile"><i className="fa-solid fa-user"></i></a></li>
+                        </div>
+                    ) : (
+                        <div>
+                            <li><a href="/signup">Create an Account</a></li>
+                            <li><a href="/signin">LogIn</a></li>
+                        </div>
+                    )}
                 </ul>
             </div>
 
             <nav className="navbar">
                 <div className="container-fluid">
-                    <a href="/" class="navbar-brand" className={s.logo}><i className="fa-solid fa-book"></i>REAL<span>BOOKS</span></a>
+                    <a href="/" className={s.logo + " navbar-brand"}><i className="fa-solid fa-book"></i>REAL<span>BOOKS</span></a>
                     <form className="d-flex flex-row" role="search">
                         <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
                         <button className="btn btn-outline-success" type="submit">Search</button>
@@ -77,7 +92,9 @@ export default function Navbar() {
             </nav>
 
             <div className={s.lowerNav}>
-                <button onClick={toggleEditButtons} type="button" className="btn btn-secondary"><i class="fa-solid fa-pen"></i></button>
+                {isLoggedIn && auth?.role === "admin" ? (
+                    <button onClick={toggleEditButtons} type="button" className="btn btn-secondary"><i className="fa-solid fa-pen"></i></button>
+                ) : ( null )}
                 <ul>
                     {isLoading ? (
                         <li>Loading...</li>
@@ -93,29 +110,23 @@ export default function Navbar() {
                                             }}
                                             className="btn btn-sm btn-warning"
                                         >
-                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            <i className="fa-solid fa-pen-to-square"></i>
                                         </button>
                                         <button
                                             onClick={() => handleDelete(category._id)}
                                             className="btn btn-sm btn-danger"
                                         >
-                                            <i class="fa-solid fa-trash"></i>
+                                            <i className="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
                                 )}
                             </li>
                         ))
                     )}
-
-
-
-                    {/* <li className={getBtnClass("all")} onClick={() => handleClickTakeAll()}>All books</li>
-                    <li className={getBtnClass("detective")} onClick={() => handleClickGenre("detective")}>Detectives</li>
-                    <li className={getBtnClass("adventure")} onClick={() => handleClickGenre("adventure")}>Adventures</li>
-                    <li className={getBtnClass("novel")} onClick={() => handleClickGenre("novel")}>Novel</li> */}
                 </ul>
 
                 { editModal && <UpdateCategory category={currentCategory} setEditModal={setEditModal} editModal={editModal} /> }
+                
             </div>
         </div>
     )

@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
+@import url('https://cdn-uicons.flaticon.com/2.4.0/uicons-solid-straight/css/uicons-solid-straight.css');
 
 .wrapper {
     display: flex;
@@ -31,38 +31,85 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.singleBook > img {
+.singleBook_wrapper {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+.singleBook_wrapper > img {
     width: 150px;
     height: 226px;
 }
 
-.singleBook > h3 {
+.singleBook_wrapper > h3 {
     margin-top: 10px;
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-style: normal;
+    text-align: left;
 }
 
-.singleBook > p {
+.singleBook_wrapper > p {
     margin-top: 2px;
     font-size: 14px;
     color: #666;
+    text-align: left;
 }
 
-.singleBook > button {
+.btnwrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 94%;
+    height: 100%;
     margin-top: 10px;
-    padding: 5px 10px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #03aca4;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
 }
 
-.singleBook > button:hover {
-    background-color: #02827b;
+.like_btn {
+    cursor: pointer;
+    color: #000;
+    transition: all 0.2s ease-in-out;
+}
+
+.like_btn:hover {
+    color: red;
+    scale: 1.2;
+}
+
+.like_btn:active {
+    scale: 1;
+}
+
+.edit_delete_btns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
+    height: 100%;
+}
+
+.edit_delete_btns button {
+    width: 19px;
+    height: 19px;
+    border: none;
+    background-color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #7b6a6a;
+    font-size: 16px;
+    margin-top: 0;
+}
+
+.edit_delete_btns button i {
+    width: fit-content;
+    height: fit-content;
 }
 
 .notfound {

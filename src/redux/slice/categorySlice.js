@@ -5,7 +5,7 @@ const categorySlice = createSlice({
     name: "category",
     initialState: {
         categories: [],
-        isLoading: false, // here i used isLoading instead of loading
+        isLoading: false,
         error: null
     },
     reducers: {
@@ -45,7 +45,6 @@ export const fetchCategories = () => async dispatch => {
         return data;
     } catch (error) {
         dispatch(categoryFailure(error.message));
-        throw error;
     }
 };
 
@@ -67,7 +66,6 @@ export const updateCategory = (id, category) => async dispatch => {
         return data;
     } catch (error) {
         dispatch(categoryFailure(error.message));
-        throw error;
     }
 };
 

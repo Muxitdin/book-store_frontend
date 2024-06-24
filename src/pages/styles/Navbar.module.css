@@ -16,10 +16,20 @@
 
 .upperNav ul {
     min-height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+
+.upperNav ul div {
     display: flex;
     align-items: center;
     gap: 20px;
-    list-style: none;
+}
+
+.upperNav ul div:nth-child(2) {
+    justify-self: flex-end;
 }
 
 .upperNav ul li {
@@ -33,6 +43,35 @@
     color: #7b6a6a;
 }
 
+.profileInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+    gap: 0px !important;
+}
+
+.profileInfo p:nth-child(2) {
+    font-size: 13px;
+    color: #7b6a6a;
+    text-align: start;
+}
+
+.upperNav ul .profileIcon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #c9bebe;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.upperNav ul .profileIcon i {
+    font-size: 16px;
+}
 
 nav {
     height: 50%;

@@ -1,0 +1,29 @@
+.wrapper {
+    width: 100%;
+    height: calc(100vh - 197px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+form h1 {
+    font-size: 2rem;
+    font-weight:600;
+}
+
+form input {
+    width: 200px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
