@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react'
 import Service from '../config/service.js';
 import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice";
+import { getAuthFunction } from "../redux/slice/authSlice.js";
 import { useDispatch, useSelector } from 'react-redux';
 import s from "../pages/styles/BookRenderer.module.css";
+import { FaCartShopping } from "react-icons/fa6";
+import { getFromLocalStorage } from '../config/localstorage.js';
+import { useNavigate } from 'react-router-dom';
 
 
-function BookRender({ books, isLoading}) {
+function BookRender({ books, isLoading }) {
     const { auth, isLoggedIn } = useSelector(state => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getAllBooks = async () => {
@@ -23,6 +28,21 @@ function BookRender({ books, isLoading}) {
         getAllBooks();
     }, [])
 
+    const handleAddToCart = async (userId, bookId) => {
+        if (isLoggedIn) {
+            try {
+                await Service.addBookToCart(userId, bookId)
+                if (getFromLocalStorage("token")) {
+                    dispatch(getAuthFunction());
+                }
+                navigate("/cart")
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            navigate("/login")
+        }
+    }
 
     const handleDeleteBook = async (id) => {
         try {
@@ -36,9 +56,10 @@ function BookRender({ books, isLoading}) {
 
     return (
         <div className={s.wrapper}>
+            <h1 className="text-center text-4xl text-slate-600">All Books</h1>
             {
                 isLoading ? <div className={s.loaderWrapper}><div className={s.loader}></div></div> :
-                    <>
+                    <div className={s.content_wrapper}>
                         {
                             books?.map(book => (
                                 <div className={s.singleBook} key={book._id}>
@@ -49,8 +70,14 @@ function BookRender({ books, isLoading}) {
                                         {/* <p>{book.description}</p> */}
                                         <p>{book.category}</p>
                                         <div className={s.btnwrapper}>
-                                            <div className={s.like_btn}>
+                                            {/* <div className={s.like_btn}>
                                                 <i class="fi fi-ss-heart"></i>
+                                            </div> */}
+                                            <div className={s.price}>
+                                                ${book.price}
+                                            </div>
+                                            <div className={s.edit_delete_btns}>
+                                                <button onClick={() => handleAddToCart(auth._id, book._id)}><FaCartShopping /></button>
                                             </div>
                                             {isLoggedIn && auth?.role === "admin" ? (
                                                 <div className={s.edit_delete_btns}>
@@ -63,7 +90,7 @@ function BookRender({ books, isLoading}) {
                                 </div>
                             ))
                         }
-                    </>
+                    </div>
             }
             {
                 !isLoading && books?.length === 0 ? <h1 className={s.notfound}>No book found</h1> : null

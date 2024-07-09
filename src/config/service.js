@@ -23,9 +23,24 @@ const Service = {
         const { data } = await api.get(`/api/books/filter`, filter);
         return data
     },
+    getAllBooksInCart: async () => {
+        const { data } = await api.get('/api/books')
+    },
     deleteBook: async (id) => {
         const { data } = await api.delete(`/api/books/delete/${id}`);
         return data
+    },
+    addBookToCart: async (userId, bookId) => {
+        const { data } = await api.post(`/api/books/${userId}/${bookId}`)
+        return data
+    },
+    removeBookFromCart: async (userId, itemId) => {
+        const { data } = await api.delete(`/api/books/${userId}/rm/${itemId}`)
+        return data
+    },
+    deleteBookFromCart: async (userId, itemId) => {
+        const { data } = await api.delete(`/api/books/${userId}/del/${itemId}`)
+        return data;
     },
     // category
     updateCategory: async (id, category) => {

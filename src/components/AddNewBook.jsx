@@ -23,7 +23,7 @@ export default function AddNewBook( {setAddBookModal} ) {
     const handleAddNewBook = async (e) => {
         e.preventDefault()
         console.log(newBook)
-        await axios.post("http://localhost:5000/api/books/", newBook)
+        await axios.post("http://localhost:3000/api/books/", newBook)
         setAddBookModal(false)
     }
 

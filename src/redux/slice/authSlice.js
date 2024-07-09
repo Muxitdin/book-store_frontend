@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { clearLocalStorage, saveToLocalStorage } from "../../config/localstorage";
+import Service from "../../config/service";
 
 const initialState = {
     isLoading: false,
@@ -17,9 +18,7 @@ const AuthSlice = createSlice({
         },
         authSuccess: (state, action) => {
             state.isLoading = false;
-            console.log(action.payload)
             state.auth = action.payload;
-            console.log(state.auth)
             state.isLoggedIn = true;
             if (action.payload.token) {
                 saveToLocalStorage("token", action.payload.token);
@@ -44,3 +43,30 @@ export const {
     authLogout,
 } = AuthSlice.actions;
 export default AuthSlice.reducer;
+
+export const getAuthFunction = () => async dispatch =>{
+    try {
+        const { data } = await Service.getAuth();
+        await dispatch(authSuccess(data));
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const addToCart = ( userId, bookId ) => async dispatch => {
+    try {
+        const { data } = await Service.addBookToCart(userId, bookId);
+        return data;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const deleteFromCart = ( userId, itemId ) => async dispatch => {
+    try {
+        const { data } = await Service.deleteBookFromCart(userId, itemId);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}

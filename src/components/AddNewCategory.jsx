@@ -11,6 +11,7 @@ export default function AddNewCategory({ setAddCategoryModal }) {
     const handleSubmit = async () => {
         dispatch(addCategory({ name }));
         setAddCategoryModal(false);
+        dispatch(fetchCategories());
     };
 
     return (

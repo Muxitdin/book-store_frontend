@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import Service from "../../config/service.js";
 
 const initialState = {
     isLoading: false,

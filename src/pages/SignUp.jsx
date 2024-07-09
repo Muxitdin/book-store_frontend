@@ -19,7 +19,7 @@ export default function SignUp() {
         e.preventDefault();
         console.log(newUser);
         try {
-            const { data } = await axios.post("http://localhost:5000/api/auth/register", newUser);
+            const { data } = await axios.post("http://localhost:3000/api/auth/register", newUser);
             console.log(data)
             const token = data.token;
             const user = data.user;

@@ -40,7 +40,7 @@ export default categorySlice.reducer;
 export const fetchCategories = () => async dispatch => {
     dispatch(categoryStart());
     try {
-        const { data } = await axios.get('http://localhost:5000/api/categories');
+        const { data } = await axios.get('http://localhost:3000/api/categories');
         dispatch(categorySuccess(data));
         return data;
     } catch (error) {
@@ -51,7 +51,7 @@ export const fetchCategories = () => async dispatch => {
 export const addCategory = (category) => async dispatch => {
     dispatch(categoryStart());
     try {
-        const { data } = await axios.post('http://localhost:5000/api/categories/add', category);
+        const { data } = await axios.post('http://localhost:3000/api/categories/add', category);
         dispatch(addCategorySuccess(data));
     } catch (error) {
         dispatch(categoryFailure(error.message));
@@ -61,7 +61,7 @@ export const addCategory = (category) => async dispatch => {
 export const updateCategory = (id, category) => async dispatch => {
     dispatch(categoryStart());
     try {
-        const { data } = await axios.put(`http://localhost:5000/api/categories/update/${id}`, category);
+        const { data } = await axios.put(`http://localhost:3000/api/categories/update/${id}`, category);
         dispatch(updateCategorySuccess(data));
         return data;
     } catch (error) {
@@ -72,7 +72,7 @@ export const updateCategory = (id, category) => async dispatch => {
 export const deleteCategory = (id) => async dispatch => {
     dispatch(categoryStart());
     try {
-        await axios.delete(`http://localhost:5000/api/categories/delete/${id}`);
+        await axios.delete(`http://localhost:3000/api/categories/delete/${id}`);
         dispatch(deleteCategorySuccess(id));
     } catch (error) {
         dispatch(categoryFailure(error.message));

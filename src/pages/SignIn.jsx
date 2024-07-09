@@ -16,7 +16,7 @@ export default function SignIn() {
         e.preventDefault();
         console.log(newUser)
         try {
-            const { data } = await axios.post("http://localhost:5000/api/auth/login", newUser);
+            const { data } = await axios.post("http://localhost:3000/api/auth/login", newUser);
             console.log(data)
             const token = data.token;
             const user = data.user;

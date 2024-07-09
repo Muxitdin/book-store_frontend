@@ -1,4 +1,5 @@
 import axios from "axios";
+import { NavLink } from "react-router-dom"
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice";
@@ -16,7 +17,7 @@ export default function Navbar() {
     const [showEditButtons, setShowEditButtons] = useState(false); // State for toggling buttons
     const [currentActive, setCurrentActive] = useState(""); // State for active genre button
 
-    console.log(isLoggedIn, auth?.role)
+    // console.log(isLoggedIn, auth?.role)
 
     useEffect(() => {
         dispatch(fetchCategories());
@@ -64,18 +65,30 @@ export default function Navbar() {
             <div className={s.upperNav}>
                 <ul className="nav justify-content-between">
                     <div>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/wishlist">Wish List</a></li>
+                        <li><NavLink to="/">Home</NavLink></li>
+                        {isLoggedIn && (
+                        <>
+                            <li><NavLink to="/wishlist">WishList</NavLink></li>
+                            <li>
+                                <NavLink to={'/cart'} className="flex gap-1">
+                                    <span className="text-black">Cart:</span>
+                                    <span>{auth?.basket?.reduce((total, item) => total + item?.count, 0)}</span>
+                                    <span>{(auth?.basket?.reduce((total, item) => total + item?.count, 0)) > 1 ? "items" : "item"}</span>
+                                    <span>${auth?.basket?.reduce((total, item) => total + (item?.book?.price * item?.count), 0)}</span>
+                                </NavLink>
+                            </li>
+                        </>
+                        )}
                     </div>
-                    { isLoggedIn && auth?.role ? (
+                    {isLoggedIn && auth?.role ? (
                         <div>
                             <div className={s.profileInfo} ><p>{`${auth?.fullName}`}</p><p>{`${auth?.role}`}</p></div>
-                            <li className={s.profileIcon}><a href="/profile"><i className="fa-solid fa-user"></i></a></li>
+                            <NavLink to="/profile"><li className={s.profileIcon}><i className="fa-solid fa-user"></i></li></NavLink>
                         </div>
                     ) : (
                         <div>
-                            <li><a href="/signup">Create an Account</a></li>
-                            <li><a href="/signin">LogIn</a></li>
+                            <li><NavLink to="/signup">Create an Account</NavLink></li>
+                            <li><NavLink to="/signin">LogIn</NavLink></li>
                         </div>
                     )}
                 </ul>
@@ -94,7 +107,7 @@ export default function Navbar() {
             <div className={s.lowerNav}>
                 {isLoggedIn && auth?.role === "admin" ? (
                     <button onClick={toggleEditButtons} type="button" className="btn btn-secondary"><i className="fa-solid fa-pen"></i></button>
-                ) : ( null )}
+                ) : (null)}
                 <ul>
                     {isLoading ? (
                         <li>Loading...</li>
@@ -125,8 +138,8 @@ export default function Navbar() {
                     )}
                 </ul>
 
-                { editModal && <UpdateCategory category={currentCategory} setEditModal={setEditModal} editModal={editModal} /> }
-                
+                {editModal && <UpdateCategory category={currentCategory} setEditModal={setEditModal} editModal={editModal} />}
+
             </div>
         </div>
     )
