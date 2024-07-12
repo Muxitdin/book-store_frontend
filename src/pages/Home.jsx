@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice";
 import BookRender from "../components/BookRender.jsx";
 
-export default function Home() {
+export default function Home({query}) {
     const [myUrl, setMyUrl] = useState("http://localhost:3000");
     const { books, isLoading } = useSelector(state => state.book);
     const dispatch = useDispatch();
@@ -29,7 +29,7 @@ export default function Home() {
 
     return (
         <>
-            <BookRender books={books} isLoading={isLoading}/>
+            <BookRender books={books} isLoading={isLoading} query={query}/>
         </>
     )
 }

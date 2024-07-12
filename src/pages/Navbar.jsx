@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NavLink } from "react-router-dom"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice";
 import { fetchCategories, deleteCategory, updateCategory } from "../redux/slice/categorySlice";
@@ -8,7 +8,7 @@ import Service from "../config/service.js";
 import UpdateCategory from "../components/UpdateCategory";
 import s from "./styles/Navbar.module.css";
 
-export default function Navbar() {
+export default function Navbar({ setQuery }) {
     const dispatch = useDispatch();
     const { categories, isLoading } = useSelector(state => state.category);
     const { auth, isLoggedIn } = useSelector(state => state.auth);
@@ -16,12 +16,34 @@ export default function Navbar() {
     const [currentCategory, setCurrentCategory] = useState(null);
     const [showEditButtons, setShowEditButtons] = useState(false); // State for toggling buttons
     const [currentActive, setCurrentActive] = useState(""); // State for active genre button
-
+    // let debounceTimeout = useRef(null)
     // console.log(isLoggedIn, auth?.role)
 
     useEffect(() => {
         dispatch(fetchCategories());
     }, [dispatch]);
+
+    const handleInputChange = (e) => {
+        const { value } = e.target;
+        setQuery(value);
+
+        // if (debounceTimeout.current) {
+        //     clearTimeout(debounceTimeout.current);
+        // }
+
+        // debounceTimeout = setTimeout(() => {
+        //     const fetchData = async () => {
+        //         try {
+        //             const data = Service.getAllBooks({ params: { search: query } });
+        //             dispatch(bookSuccess({ type: "b", data }));
+        //         } catch (error) {
+        //             console.log(error);
+        //             dispatch(bookFailure(error.message));
+        //         }
+        //     }
+        //     fetchData();
+        // }, 500);
+    }
 
     const handleDelete = async (id) => {
         dispatch(deleteCategory(id));
@@ -97,10 +119,9 @@ export default function Navbar() {
             <nav className="navbar">
                 <div className="container-fluid">
                     <a href="/" className={s.logo + " navbar-brand"}><i className="fa-solid fa-book"></i>REAL<span>BOOKS</span></a>
-                    <form className="d-flex flex-row" role="search">
-                        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                        <button className="btn btn-outline-success" type="submit">Search</button>
-                    </form>
+                    <div className="d-flex flex-row">
+                        <input onChange={handleInputChange} className="form-control" type="search" placeholder="Search" aria-label="Search" />
+                    </div>
                 </div>
             </nav>
 

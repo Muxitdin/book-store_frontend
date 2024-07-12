@@ -15,7 +15,7 @@ import Navbar from "./pages/Navbar";
 import Footer from "./pages/Footer";
 
 export default function App() {
-
+  const [query, setQuery] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,10 +40,10 @@ export default function App() {
     <div className={s.wrapper}>
       <div className={s.content}>
         {/* Navbar */}
-        <Navbar />
+        <Navbar setQuery={setQuery}/>
 
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home query={query}/>} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/profile" element={<Profile />} />

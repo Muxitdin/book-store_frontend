@@ -9,7 +9,7 @@ import { getFromLocalStorage } from '../config/localstorage.js';
 import { useNavigate } from 'react-router-dom';
 
 
-function BookRender({ books, isLoading }) {
+function BookRender({ books, isLoading, query}) {
     const { auth, isLoggedIn } = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -61,7 +61,11 @@ function BookRender({ books, isLoading }) {
                 isLoading ? <div className={s.loaderWrapper}><div className={s.loader}></div></div> :
                     <div className={s.content_wrapper}>
                         {
-                            books?.map(book => (
+                            books?.filter((book) => {
+                                return book.name.toLowerCase().includes(query.toLowerCase()) || 
+                                book.author.fullName.toLowerCase().includes(query.toLowerCase()) ||
+                                book.category.toLowerCase().includes(query.toLowerCase())
+                            }).map(book => (
                                 <div className={s.singleBook} key={book._id}>
                                     <div className={s.singleBook_wrapper}>
                                         <img src={book.image} alt="poster" />

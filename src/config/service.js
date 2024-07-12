@@ -15,8 +15,8 @@ const Service = {
         const { data } = await api.get('/api/auth');
         return data;
     },
-    getAllBooks: async () => {
-        const { data } = await api.get("/api/books");
+    getAllBooks: async (filter) => {
+        const { data } = await api.get("/api/books", filter);
         return data
     },
     getAllBooksFilter: async (filter) => {
