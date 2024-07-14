@@ -26,7 +26,7 @@ export default function SignUp() {
             console.log("Token received:", token);
             saveToLocalStorage("token", token);
             // saveToLocalStorage("user", JSON.stringify(user));
-            navigate("/profile");
+            navigate("/verification");
             document.location.reload();
         } catch (error) {
             console.log("Error creating user:", error);
