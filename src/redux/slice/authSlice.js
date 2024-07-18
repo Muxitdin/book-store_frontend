@@ -24,7 +24,7 @@ const AuthSlice = createSlice({
                 saveToLocalStorage("token", action.payload.token);
             }
         },
-        authFailure: (state, action) => {   
+        authFailure: (state, action) => {
             state.isLoading = false;
             state.isError = action.payload;
         },
@@ -44,7 +44,7 @@ export const {
 } = AuthSlice.actions;
 export default AuthSlice.reducer;
 
-export const getAuthFunction = () => async dispatch =>{
+export const getAuthFunction = () => async dispatch => {
     try {
         const { data } = await Service.getAuth();
         await dispatch(authSuccess(data));
@@ -53,7 +53,7 @@ export const getAuthFunction = () => async dispatch =>{
     }
 }
 
-export const addToCart = ( userId, bookId ) => async dispatch => {
+export const addToCart = (userId, bookId) => async dispatch => {
     try {
         const { data } = await Service.addBookToCart(userId, bookId);
         return data;
@@ -62,9 +62,21 @@ export const addToCart = ( userId, bookId ) => async dispatch => {
     }
 }
 
-export const deleteFromCart = ( userId, itemId ) => async dispatch => {
+export const deleteFromCart = (userId, itemId) => async dispatch => {
     try {
         const { data } = await Service.deleteBookFromCart(userId, itemId);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const updateUser = (id, field) => async dispatch => {
+    dispatch(authStart())
+    try {
+        const { data } = await Service.updateUser(id, field);
+        console.log(data)
+        dispatch(authSuccess(data))
         return data;
     } catch (error) {
         console.log(error);

@@ -56,6 +56,10 @@ const Service = {
     loginUser: async (user) => {
         const { data } = await api.post("/api/auth/login", user);
         return data
+    },
+    updateUser: async (id, field) => {
+        const { data } = await api.put(`/api/auth/edit/${id}`, field);
+        return data
     }
 };
 
