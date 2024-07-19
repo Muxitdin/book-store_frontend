@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import AddNewBook from "../components/AddNewBook.jsx"
 import AddNewCategory from "../components/AddNewCategory.jsx"
 import s from "./styles/Profile.module.css"
@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { authLogout, updateUser } from "../redux/slice/authSlice.js"
 import { FaEdit } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
+import Service from "@/config/service.js"
 
 
 export default function Profile() {
@@ -64,6 +65,15 @@ export default function Profile() {
         }
     };
 
+    const handleSendVerificationEmail = async () => {
+        try {
+            const { data } = await Service.sendVerificationEmail( { email : auth?.email } );
+            console.log(data)
+        } catch (error) {
+            console.log(error)
+        }
+    } 
+
     return (
         <div className={s.wrapper}>
             <div className={s.inner_wrapper}>
@@ -82,12 +92,12 @@ export default function Profile() {
                                         onChange={(e) => setFullName(e.target.value)}
                                         className="border px-2 py-2 mx-2"
                                     />
-                                    <FaCheck onClick={() => handleSave("fullName")} className="mt-3"/>
+                                    <FaCheck onClick={() => handleSave("fullName")} className="mt-3 text-slate-600"/>
                                 </>
                             ) : (
                                 <>
-                                    <span className="text-gray-900">{fullName}</span> 
-                                    <FaEdit onClick={() => handleEditData("fullName")} className="mt-1 ml-2"/>
+                                    <span className="text-gray-900 font-medium">{fullName}</span> 
+                                    <FaEdit onClick={() => handleEditData("fullName")} className="mt-1 ml-2 text-slate-600"/>
                                 </>
                             )}
                         </div>
@@ -103,19 +113,20 @@ export default function Profile() {
                                         onChange={(e) => setEmail(e.target.value)}
                                         className="border px-2 py-2 mx-2"
                                     />
-                                    <FaCheck onClick={() => handleSave("email")} className="mt-3"/>
+                                    <FaCheck onClick={() => handleSave("email")} className="mt-3 text-slate-600"/>
                                 </>
                             ) : (
                                 <>
-                                    <span className="text-gray-900">{email}</span>
-                                    <FaEdit onClick={() => handleEditData("email")} className="mt-1 ml-2"/>
+                                    <span className="text-gray-900 font-medium">{email}</span>
+                                    <FaEdit onClick={() => handleEditData("email")} className="mt-1 ml-2 text-slate-600"/>
                                 </>
                             )}
                         </div>
+                        { !auth?.verified && <NavLink to="/verification" onClick={handleSendVerificationEmail} className="text-red-500">click here to verify your email</NavLink> }
                     </div>
 
                     <div className="w-3/5 mt-14 flex items-center justify-start gap-x-6">
-                        {auth?.role === "admin" && (
+                        {auth?.role === "admin" && auth?.verified === true && (
                             <>
                                 <button onClick={() => setAddCategoryModal(true)} type="button" className="btn btn-primary">Add Category</button>
                                 <button onClick={() => setAddBookModal(true)} type="button" className="btn btn-success">Add Book</button>

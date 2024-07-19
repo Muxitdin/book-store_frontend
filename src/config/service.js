@@ -60,6 +60,11 @@ const Service = {
     updateUser: async (id, field) => {
         const { data } = await api.put(`/api/auth/edit/${id}`, field);
         return data
+    },
+    sendVerificationEmail: async (params) => {
+        console.log(params)
+        const { data } = await api.get("/api/auth/user-verify", { params });
+        return data
     }
 };
 
