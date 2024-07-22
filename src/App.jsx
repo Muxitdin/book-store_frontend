@@ -14,6 +14,7 @@ import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
 import Navbar from "./pages/Navbar";
 import Footer from "./pages/Footer";
+import UpdatePassword from "./pages/UpdatePass.jsx";
 
 export default function App() {
   const [query, setQuery] = useState("");
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/" element={<Home query={query} />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verification" element={<Verification />} />
+          <Route path="/update-password/:userId/:uniqueId" element={<UpdatePassword />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/wishlist" element={<Wishlist />} />

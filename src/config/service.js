@@ -65,7 +65,15 @@ const Service = {
         console.log(params)
         const { data } = await api.get("/api/auth/user-verify", { params });
         return data
-    }
+    },
+    findUserByEmail: async (email) => {
+        const { data } = await api.post('/api/auth/find-user-by-email', { email });
+        return data;
+    },
+    updatePassword: async (userId, uniqueId, passwords) => {
+        const { data } = await api.put(`/api/auth/update-password/${userId}/${uniqueId}`, passwords);
+        return data;
+    },
 };
 
 export default Service;

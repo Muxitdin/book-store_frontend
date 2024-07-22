@@ -2,7 +2,9 @@ import { React, useState } from "react";
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import { saveToLocalStorage } from "../config/localstorage.js"
-import s from "./styles/SignIn.module.css"
+import s from "./styles/SignUp.module.css"
+import Service from "../config/service.js";
+import Swal from "sweetalert2";
 
 export default function SignIn() {
     const navigate = useNavigate();
@@ -12,7 +14,7 @@ export default function SignIn() {
         password: ""
     })
 
-    const handldeLogInUser = async (e) => {
+    const handleLogInUser = async (e) => {
         e.preventDefault();
         console.log(newUser)
         try {
@@ -36,12 +38,52 @@ export default function SignIn() {
         })
     }
 
+    const handleIsForgotPassword = async (e) => {
+        e.stopPropagation();
+        Swal.fire({
+            title: "Insert your email",
+            input: "email",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Send",
+            cancelButtonText: "Cancel",
+            showLoaderOnConfirm: true,
+            preConfirm: async (inputValue) => {
+                try {
+                    if (inputValue === "") return Swal.showValidationMessage("Please, insert an email");
+                    const data = await Service.findUserByEmail(inputValue);
+                    console.log(data)
+                    return data;
+                } catch (error) {
+                    Swal.showValidationMessage(error?.response?.data?.message || error.message);
+                }
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: result?.value?.message,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+    };
     return (
         <div className={s.wrapper}>
-            <form onSubmit={handldeLogInUser}>
+            <form onSubmit={handleLogInUser}>
                 <h1>Log In</h1>
-                <input onChange={getInputValue} name='email' type="email" placeholder='E-mail' />
-                <input onChange={getInputValue} name='password' type="password" placeholder='Password' />
+                <input onChange={getInputValue} className="w-full" name='email' type="email" placeholder='E-mail' />
+                <input onChange={getInputValue} className="w-full" name='password' type="password" placeholder='Password' />
+                <p
+                    onClick={(e) => handleIsForgotPassword(e)}
+                    className="text-blue-500 hover:underline self-start cursor-pointer">
+                    forgot password?
+                </p>
                 <button type="submit" className="btn btn-success">Log In</button>
             </form>
         </div>
