@@ -10,7 +10,7 @@ function Verification() {
     const handleVerification = () => {
         if (isLoggedIn) {
             navigate('/profile')
-            document.location.reload('/')
+            document.location.reload()
             return;
         }
         navigate('/signin')
