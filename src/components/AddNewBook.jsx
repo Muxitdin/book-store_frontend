@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import s from "../pages/styles/AddNewBook.module.css"
 
-export default function AddNewBook( {setAddBookModal} ) {
+export default function AddNewBook({ setAddBookModal }) {
     const [newBook, setNewBook] = useState({
         name: "",
         year: "",
@@ -50,6 +50,18 @@ export default function AddNewBook( {setAddBookModal} ) {
         }
     }
 
+    const uploadImage = async (e) => {
+        const formData = new FormData();
+        const file = e.target.files[0];
+        formData.append("image", file);
+        const { data } = await axios.post("http://localhost:3000/api/upload-image", formData);
+        console.log(data)
+        setNewBook({
+            ...newBook,
+            image: data?.imgUrl
+        })
+    }
+
     return (
         <div className={s.wrapper}>
             <form onSubmit={(e) => handleAddNewBook(e)}>
@@ -71,7 +83,7 @@ export default function AddNewBook( {setAddBookModal} ) {
                     </SelectContent>
                 </Select> */}
                 <input onChange={getInputValue} name='description' type="text" placeholder='Description' />
-                <input onChange={getInputValue} name='image' type="text" placeholder='Image URL' />
+                {/* <input onChange={getInputValue} name='image' type="text" placeholder='Image URL' /> */}
                 <input onChange={getInputValue} name='price' type="text" placeholder='Price' />
                 {/* <input onChange={getInputValue} name='category' type="text" placeholder='Genre' /> */}
                 {/* <input onChange={getInputValue} name='author' type="text" placeholder='Author' /> */}
@@ -87,6 +99,9 @@ export default function AddNewBook( {setAddBookModal} ) {
                         <option key={cat?._id} value={cat?.name}>{cat?.name}</option>
                     ))}
                 </select>
+                <form action="/profile" method="post" enctype="multipart/form-data">
+                    <input onChange={uploadImage} class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="image" type="file" name="image" ></input>
+                </form>
                 <button type="submit" class="btn btn-success">Create</button>
             </form>
         </div>

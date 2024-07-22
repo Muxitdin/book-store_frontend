@@ -7,9 +7,10 @@ import s from "../pages/styles/BookRenderer.module.css";
 import { FaCartShopping } from "react-icons/fa6";
 import { getFromLocalStorage } from '../config/localstorage.js';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from '@/config/sweetAlert.js';
 
 
-function BookRender({ books, isLoading, query}) {
+function BookRender({ books, isLoading, query }) {
     const { auth, isLoggedIn } = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -35,7 +36,11 @@ function BookRender({ books, isLoading, query}) {
                 if (getFromLocalStorage("token")) {
                     dispatch(getAuthFunction());
                 }
-                navigate("/cart")
+                // navigate("/cart")
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Book added to cart'
+                })
             } catch (error) {
                 console.log(error)
             }
@@ -47,7 +52,23 @@ function BookRender({ books, isLoading, query}) {
     const handleDeleteBook = async (id) => {
         try {
             await Service.deleteBook(id);
-            document.location.reload();
+            if (getFromLocalStorage("token")) {
+                const getAllBooks = async () => {
+                    dispatch(bookStart());
+                    try {
+                        const data = await Service.getAllBooks();
+                        dispatch(bookSuccess({ type: "b", data }));
+                    } catch (error) {
+                        dispatch(bookFailure());
+                        console.error('Error fetching books:', error);
+                    }
+                }
+                getAllBooks();
+            }
+            Toast.fire({
+                icon: 'success',
+                title: 'Deleted successfully'
+            })
         } catch (error) {
             console.log(error)
         }
@@ -62,9 +83,9 @@ function BookRender({ books, isLoading, query}) {
                     <div className={s.content_wrapper}>
                         {
                             books?.filter((book) => {
-                                return book?.name?.toLowerCase().includes(query.toLowerCase()) || 
-                                book?.author?.fullName.toLowerCase().includes(query.toLowerCase()) ||
-                                book?.category?.toLowerCase().includes(query.toLowerCase())
+                                return book?.name?.toLowerCase().includes(query.toLowerCase()) ||
+                                    book?.author?.fullName.toLowerCase().includes(query.toLowerCase()) ||
+                                    book?.category?.toLowerCase().includes(query.toLowerCase())
                             }).map(book => (
                                 <div className={s.singleBook} key={book._id}>
                                     <div className={s.singleBook_wrapper}>

@@ -6,6 +6,7 @@ import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice.js
 import { getAuthFunction, deleteFromCart } from "../redux/slice/authSlice.js";
 import { getFromLocalStorage } from '../config/localstorage.js';
 import s from "../pages/styles/BookRenderer.module.css";
+import { Toast } from '@/config/sweetAlert.js';
 
 
 export default function Cart() {
@@ -28,6 +29,10 @@ export default function Cart() {
                 if (getFromLocalStorage("token")) {
                     dispatch(getAuthFunction());
                 }
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Added one more'
+                })
             } catch (error) {
                 console.log(error)
             }
@@ -41,7 +46,7 @@ export default function Cart() {
         try {
             await Service.removeBookFromCart(userId, itemId);
 
-            if ((auth?.basket?.reduce((total, item) => total + item?.count, 0)) <= 1) {
+            if ((auth?.basket?.reduce((total, item) => total + item?.count, 0)) < 1) {
                 dispatch(deleteFromCart(userId, itemId));
                 console.log('Cart is now empty')
                 dispatch(getAuthFunction());
@@ -57,8 +62,13 @@ export default function Cart() {
         console.log(itemId)
         try {
             dispatch(deleteFromCart(userId, itemId))
-            // dispatch(getAuthFunction());
-            document.location.reload();
+            if (getFromLocalStorage("token")) {
+                dispatch(getAuthFunction());
+            }
+            Toast.fire({
+                icon: 'success',
+                title: 'Deleted from cart'
+            })
         } catch (error) {
             console.log(error);
         }

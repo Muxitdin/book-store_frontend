@@ -8,6 +8,7 @@ import { authLogout, updateUser } from "../redux/slice/authSlice.js"
 import { FaEdit } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
 import Service from "@/config/service.js"
+import { Toast } from "@/config/sweetAlert.js"
 
 
 export default function Profile() {
@@ -69,6 +70,10 @@ export default function Profile() {
         try {
             const { data } = await Service.sendVerificationEmail( { email : auth?.email } );
             console.log(data)
+            Toast.fire({
+                icon: 'success',
+                title: 'Verification email sent successfully'
+            })
         } catch (error) {
             console.log(error)
         }
