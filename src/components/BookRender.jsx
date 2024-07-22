@@ -62,9 +62,9 @@ function BookRender({ books, isLoading, query}) {
                     <div className={s.content_wrapper}>
                         {
                             books?.filter((book) => {
-                                return book.name.toLowerCase().includes(query.toLowerCase()) || 
-                                book.author.fullName.toLowerCase().includes(query.toLowerCase()) ||
-                                book.category.toLowerCase().includes(query.toLowerCase())
+                                return book?.name?.toLowerCase().includes(query.toLowerCase()) || 
+                                book?.author?.fullName.toLowerCase().includes(query.toLowerCase()) ||
+                                book?.category?.toLowerCase().includes(query.toLowerCase())
                             }).map(book => (
                                 <div className={s.singleBook} key={book._id}>
                                     <div className={s.singleBook_wrapper}>
