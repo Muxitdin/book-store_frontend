@@ -1,12 +1,15 @@
-import axios from "axios";
-import { NavLink } from "react-router-dom"
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice";
-import { fetchCategories, deleteCategory, updateCategory } from "../redux/slice/categorySlice";
+import { fetchCategories, deleteCategory } from "../redux/slice/categorySlice";
 import Service from "../config/service.js";
 import UpdateCategory from "../components/UpdateCategory";
 import s from "./styles/Navbar.module.css";
+import logo from '../images/book.png';
+import { GoHeart } from "react-icons/go";
+import { IoCart, IoCartOutline, IoPersonOutline, IoPerson } from "react-icons/io5";
+import { GoHeartFill } from "react-icons/go";
+import { NavLink, useLocation } from "react-router-dom";
 
 export default function Navbar({ setQuery }) {
     const dispatch = useDispatch();
@@ -14,10 +17,8 @@ export default function Navbar({ setQuery }) {
     const { auth, isLoggedIn } = useSelector(state => state.auth);
     const [editModal, setEditModal] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(null);
-    const [showEditButtons, setShowEditButtons] = useState(false); // State for toggling buttons
-    const [currentActive, setCurrentActive] = useState(""); // State for active genre button
-    // let debounceTimeout = useRef(null)
-    // console.log(isLoggedIn, auth?.role)
+    const [showEditButtons, setShowEditButtons] = useState(false);
+    const [cat, setCat] = useState("")
 
     useEffect(() => {
         dispatch(fetchCategories());
@@ -26,142 +27,113 @@ export default function Navbar({ setQuery }) {
     const handleInputChange = (e) => {
         const { value } = e.target;
         setQuery(value);
-
-        // if (debounceTimeout.current) {
-        //     clearTimeout(debounceTimeout.current);
-        // }
-
-        // debounceTimeout = setTimeout(() => {
-        //     const fetchData = async () => {
-        //         try {
-        //             const data = Service.getAllBooks({ params: { search: query } });
-        //             dispatch(bookSuccess({ type: "b", data }));
-        //         } catch (error) {
-        //             console.log(error);
-        //             dispatch(bookFailure(error.message));
-        //         }
-        //     }
-        //     fetchData();
-        // }, 500);
     }
 
     const handleDelete = async (id) => {
-        dispatch(deleteCategory(id));
-        dispatch(fetchCategories());
+        try {
+            dispatch(deleteCategory(id));
+            dispatch(fetchCategories());
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const toggleEditButtons = () => {
         setShowEditButtons(!showEditButtons);
     };
 
-    // const handleClickTakeAll = async () => {
-    //     try {
-    //         dispatch(bookStart());
-    //         const { data } = await axios.get(`http://localhost:5000/api/books`);
-    //         setCurrentActive("all");
-    //         dispatch(bookSuccess({ type: "b", data }));
-    //     } catch (error) {
-    //         console.log(error);
-    //         dispatch(bookFailure(error.message));
-    //     }
-    // }
-
-    const handleClickGenre = async (genre) => {
+    const handleClickGenre = async (genre, id) => {
         try {
             dispatch(bookStart());
             const data = await Service.getAllBooksFilter({ params: { category: genre } });
             dispatch(bookSuccess({ type: "b", data }));
-            setCurrentActive(genre);
+            setCat(id);
         } catch (error) {
             console.log(error);
             dispatch(bookFailure(error.message));
         }
     }
 
-    const getBtnClass = (genre) => {
-        return currentActive === genre ? `${s.active}` : "";
-    }
+    const location = useLocation();
 
     return (
-        <div className={s.wrapper}>
-            <div className={s.upperNav}>
-                <ul className="nav justify-content-between">
-                    <div>
-                        <li><NavLink to="/">Home</NavLink></li>
-                        {isLoggedIn && (
-                        <>
-                            <li><NavLink to="/wishlist">WishList</NavLink></li>
+        <>
+            <nav className="bg-white shadow-lg relative z-20 px-32">
+                <div className="uppercase flex items-center justify-between py-2 text-sm text-gray-500" >
+                    <div className="flex items-center justify-between gap-4 cursor-pointer w-full">
+                        <ul className="navbar">
+                            <div className="container-fluid">
+                                <a href="/" className={s.logo + " navbar-brand font-mono font-bold text-xl text-black"}><img src={logo} className="mr-2 w-[2rem] h-[2rem]" alt="logo" />REAL<span>BOOKS</span></a>
+                            </div>
+                        </ul>
+                        <ul className="flex items-center gap-4 cursor-pointer">
+                            <li className="d-flex flex-row">
+                                <input onChange={handleInputChange} className="min-w-[300px] border-2 p-1.5 outline-gray-800" type="search" placeholder="Search" aria-label="Search" />
+                            </li>
                             <li>
-                                <NavLink to={'/cart'} className="flex gap-1">
-                                    <span className="text-black">Cart:</span>
-                                    <span>{auth?.basket?.reduce((total, item) => total + item?.count, 0)}</span>
-                                    <span>{(auth?.basket?.reduce((total, item) => total + item?.count, 0)) > 1 ? "items" : "item"}</span>
-                                    <span>${auth?.basket?.reduce((total, item) => total + (item?.book?.price * item?.count), 0)}</span>
+                                <NavLink className="flex items-center gap-1 text-black" to={isLoggedIn ? "/profile" : "/signin"}>
+                                    {location.pathname === "/profile" ? <IoPerson className="text-xl" /> : <IoPersonOutline className="text-xl" />}
+                                    <span>{auth?.fullName?.length > 8 ? auth?.fullName?.slice(0, 8) + "..." : auth?.fullName || "LogIn"}</span>
                                 </NavLink>
                             </li>
-                        </>
-                        )}
-                    </div>
-                    {isLoggedIn && auth?.role ? (
-                        <div>
-                            <div className={s.profileInfo} ><p>{`${auth?.fullName}`}</p><p>{`${auth?.role}`}</p></div>
-                            <NavLink to="/profile"><li className={s.profileIcon}><i className="fa-solid fa-user"></i></li></NavLink>
-                        </div>
-                    ) : (
-                        <div>
-                            <li><NavLink to="/signup">Create an Account</NavLink></li>
-                            <li><NavLink to="/signin">LogIn</NavLink></li>
-                        </div>
-                    )}
-                </ul>
-            </div>
 
-            <nav className="navbar">
-                <div className="container-fluid">
-                    <a href="/" className={s.logo + " navbar-brand"}><i className="fa-solid fa-book"></i>REAL<span>BOOKS</span></a>
-                    <div className="d-flex flex-row">
-                        <input onChange={handleInputChange} className="form-control" type="search" placeholder="Search" aria-label="Search" />
+                            <li>
+                                <NavLink className="flex items-center gap-1 text-black" to={isLoggedIn ? "/wishlist" : "/signin"}>
+                                    {location.pathname === "/wishlist" ? <GoHeartFill className="text-xl" /> : <GoHeart className="text-xl" />}
+                                    <span>Wishlist</span>
+                                </NavLink>
+                            </li>
+
+                            <li>
+                                <NavLink className="flex items-center gap-1 text-black" to={isLoggedIn ? "/cart" : "/signin"}>
+                                    {location.pathname === "/cart" ? <IoCart className="text-xl" /> : <IoCartOutline className="text-xl" />}
+                                    <span>Cart</span>
+                                    <span className="size-5 flex items-center justify-center rounded-full text-white bg-gray-800">{auth?.basket?.length || 0}</span>
+                                </NavLink>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </nav>
+            {location.pathname === "/" && (
+                <div className="mt-6 px-32 flex gap-2">
+                    {isLoggedIn && auth?.role === "admin" ? (
+                        <button onClick={toggleEditButtons} type="button" className="btn"><i className="fa-solid fa-pen text-m"></i></button>
+                    ) : (null)}
+                    <ul className="flex flex-row gap-4 ">
+                        {isLoading ? (
+                            <li>Loading...</li>
+                        ) : (
+                            categories.map(category => (
+                                <li key={category._id} className={`${cat === category?._id ? 'bg-gray-800 text-white' : 'bg-white'} cursor-pointer px-4 py-2 shadow-md hover:bg-gray-800  transform`} onClick={() => handleClickGenre(category?.name, category?._id)}>{category.name}
+                                    {showEditButtons && (
+                                        <div className={s.editButtons}>
+                                            <button
+                                                onClick={() => {
+                                                    setCurrentCategory(category);
+                                                    setEditModal(true);
+                                                }}
+                                                className="btn btn-sm btn-warning"
+                                            >
+                                                <i className="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(category?._id)}
+                                                className="btn btn-sm btn-danger"
+                                            >
+                                                <i className="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    )}
+                                </li>
+                            ))
+                        )}
+                    </ul>
 
-            <div className={s.lowerNav}>
-                {isLoggedIn && auth?.role === "admin" ? (
-                    <button onClick={toggleEditButtons} type="button" className="btn btn-secondary"><i className="fa-solid fa-pen"></i></button>
-                ) : (null)}
-                <ul>
-                    {isLoading ? (
-                        <li>Loading...</li>
-                    ) : (
-                        categories.map(category => (
-                            <li key={category._id} className={getBtnClass(category.name)} onClick={() => handleClickGenre(category.name)}>{category.name}
-                                {showEditButtons && (
-                                    <div className={s.editButtons}>
-                                        <button
-                                            onClick={() => {
-                                                setCurrentCategory(category);
-                                                setEditModal(true);
-                                            }}
-                                            className="btn btn-sm btn-warning"
-                                        >
-                                            <i className="fa-solid fa-pen-to-square"></i>
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(category._id)}
-                                            className="btn btn-sm btn-danger"
-                                        >
-                                            <i className="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
-                                )}
-                            </li>
-                        ))
-                    )}
-                </ul>
+                    {editModal && <UpdateCategory category={currentCategory} setEditModal={setEditModal} editModal={editModal} />}
 
-                {editModal && <UpdateCategory category={currentCategory} setEditModal={setEditModal} editModal={editModal} />}
-
-            </div>
-        </div>
+                </div>
+            )}
+        </>
     )
 }

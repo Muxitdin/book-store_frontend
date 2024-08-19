@@ -18,7 +18,7 @@ export default function UpdateCategory({ category, setEditModal, editModal }) {
     return (
         <div className={s.wrapper}>
             <form onSubmit={handleSubmit}>
-                <button onClick={() => setEditModal(false)} type="button" class="btn-close" aria-label="Close"></button>
+                <button onClick={() => setEditModal(false)} type="button" className="btn-close" aria-label="Close"></button>
                 <h1>Edit Category</h1>
                 <input
                     type="text"

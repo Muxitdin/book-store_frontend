@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { saveToLocalStorage } from "../config/localstorage.js"
 import s from "./styles/SignUp.module.css"
 import Service from "../config/service.js";
@@ -42,6 +42,7 @@ export default function SignIn() {
         e.stopPropagation();
         Swal.fire({
             title: "Insert your email",
+            html: `<p>We will send you an email to <b>reset</b> your <b>password</b></p>`,
             input: "email",
             inputAttributes: {
                 autocapitalize: "off"
@@ -73,18 +74,26 @@ export default function SignIn() {
             }
         });
     };
+    
     return (
         <div className={s.wrapper}>
             <form onSubmit={handleLogInUser}>
-                <h1>Log In</h1>
+                <h1 className="font-mono mb-3">Log In</h1>
                 <input onChange={getInputValue} className="w-full" name='email' type="email" placeholder='E-mail' />
                 <input onChange={getInputValue} className="w-full" name='password' type="password" placeholder='Password' />
-                <p
-                    onClick={(e) => handleIsForgotPassword(e)}
-                    className="text-blue-500 hover:underline self-start cursor-pointer">
-                    forgot password?
-                </p>
-                <button type="submit" className="btn btn-success">Log In</button>
+                <button type="submit" className="w-full btn btn-success font-mono">Log In</button>
+                <div className="w-full flex justify-between items-center">
+                    <p
+                        onClick={(e) => handleIsForgotPassword(e)}
+                        className="text-blue-400 hover:underline cursor-pointer">
+                        forgot password?
+                    </p>
+                    <NavLink
+                        to="/signup"
+                        className="text-blue-400 hover:underline cursor-pointer">
+                        create an account
+                    </NavLink>
+                </div>
             </form>
         </div>
     )

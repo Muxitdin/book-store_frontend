@@ -1,5 +1,5 @@
-import { React, useState,useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { React, useState, useEffect } from "react"
+import { useNavigate, NavLink } from "react-router-dom"
 import axios from "axios"
 import { saveToLocalStorage } from "../config/localstorage.js"
 import s from "./styles/SignUp.module.css"
@@ -43,12 +43,17 @@ export default function SignUp() {
     return (
         <div className={s.wrapper}>
             <form onSubmit={handleCreateNewUser}>
-                <h1>Registration</h1>
-                <input onChange={getInputValue} name='fullName' type="text" placeholder='Full Name' />
-                <input onChange={getInputValue} name='email' type="email" placeholder='E-mail' />
-                <input onChange={getInputValue} name='password' type="password" placeholder='Password' />
-                <input onChange={getInputValue} name="role" type="text" placeholder="are you a user or admin" />
-                <button type="submit" className="btn btn-success">Sign In</button>
+                <h1 className="font-mono mb-3">Registration</h1>
+                <input onChange={getInputValue} className="w-full" name='fullName' type="text" placeholder='Full Name' />
+                <input onChange={getInputValue} className="w-full" name='email' type="email" placeholder='E-mail' />
+                <input onChange={getInputValue} className="w-full" name='password' type="password" placeholder='Password' />
+                <input onChange={getInputValue} className="w-full" name="role" type="text" placeholder="are you a user or admin" />
+                <button type="submit" className="w-full btn btn-success font-mono">Sign In</button>
+                <NavLink
+                    to="/signin"
+                    className="text-blue-400 hover:underline cursor-pointer self-end">
+                    already have an account?
+                </NavLink>
             </form>
         </div>
     )

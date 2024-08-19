@@ -74,6 +74,10 @@ const Service = {
         const { data } = await api.put(`/api/auth/update-password/${userId}/${uniqueId}`, passwords);
         return data;
     },
+    payment: async (params) => {
+        const { data } = await api.post('/api/auth/payment', params);
+        return data;
+    }
 };
 
 export default Service;

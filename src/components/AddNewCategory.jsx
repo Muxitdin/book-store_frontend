@@ -17,7 +17,7 @@ export default function AddNewCategory({ setAddCategoryModal }) {
     return (
         <div className={s.wrapper}>
             <form onSubmit={handleSubmit}>
-                <button onClick={() => setAddCategoryModal(false)} type="button" class="btn-close" aria-label="Close"></button>
+                <button onClick={() => setAddCategoryModal(false)} type="button" className="btn-close" aria-label="Close"></button>
                 <h1>Add New Category</h1>
                 <input
                     type="text"

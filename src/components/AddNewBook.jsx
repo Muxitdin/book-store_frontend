@@ -65,7 +65,7 @@ export default function AddNewBook({ setAddBookModal }) {
     return (
         <div className={s.wrapper}>
             <form onSubmit={(e) => handleAddNewBook(e)}>
-                <button onClick={() => setAddBookModal(false)} type="button" class="btn-close" aria-label="Close"></button>
+                <button onClick={() => setAddBookModal(false)} type="button" className="btn-close" aria-label="Close"></button>
                 <h1>Add New Book</h1>
                 <input onChange={getInputValue} name='name' type="text" placeholder='Name of book' />
                 <input onChange={getInputValue} name='year' type="text" placeholder='Year' />
@@ -100,9 +100,9 @@ export default function AddNewBook({ setAddBookModal }) {
                     ))}
                 </select>
                 <form action="/profile" method="post" enctype="multipart/form-data">
-                    <input onChange={uploadImage} class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="image" type="file" name="image" ></input>
+                    <input onChange={uploadImage} className="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="image" type="file" name="image" ></input>
                 </form>
-                <button type="submit" class="btn btn-success">Create</button>
+                <button type="submit" className="btn btn-success">Create</button>
             </form>
         </div>
     )

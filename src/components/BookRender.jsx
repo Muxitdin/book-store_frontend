@@ -45,7 +45,7 @@ function BookRender({ books, isLoading, query }) {
                 console.log(error)
             }
         } else {
-            navigate("/login")
+            navigate("/signin")
         }
     }
 
@@ -87,27 +87,27 @@ function BookRender({ books, isLoading, query }) {
                                     book?.author?.fullName.toLowerCase().includes(query.toLowerCase()) ||
                                     book?.category?.toLowerCase().includes(query.toLowerCase())
                             }).map(book => (
-                                <div className={s.singleBook} key={book._id}>
+                                <div className={s.singleBook} key={book?._id}>
                                     <div className={s.singleBook_wrapper}>
-                                        <img src={book.image} alt="poster" />
-                                        <h3>{book.name}</h3>
+                                        <img src={book?.image} alt="poster" />
+                                        <h3>{book?.name}</h3>
                                         <p>{book?.author?.fullName}</p>
                                         {/* <p>{book.description}</p> */}
-                                        <p>{book.category}</p>
+                                        <p>{book?.category}</p>
                                         <div className={s.btnwrapper}>
                                             {/* <div className={s.like_btn}>
                                                 <i class="fi fi-ss-heart"></i>
                                             </div> */}
                                             <div className={s.price}>
-                                                ${book.price}
+                                                ${book?.price}
                                             </div>
                                             <div className={s.edit_delete_btns}>
-                                                <button onClick={() => handleAddToCart(auth._id, book._id)}><FaCartShopping /></button>
+                                                <button onClick={() => handleAddToCart(auth?._id, book?._id)}><FaCartShopping /></button>
                                             </div>
                                             {isLoggedIn && auth?.role === "admin" ? (
                                                 <div className={s.edit_delete_btns}>
-                                                    <button className="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></button>
-                                                    <button onClick={() => handleDeleteBook(book._id)} className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                                    <button className="btn btn-sm btn-warning"><i className="fa-solid fa-pen-to-square"></i></button>
+                                                    <button onClick={() => handleDeleteBook(book?._id)} className="btn btn-sm btn-danger"><i className="fa-solid fa-trash"></i></button>
                                                 </div>
                                             ) : (<></>)}
                                         </div>

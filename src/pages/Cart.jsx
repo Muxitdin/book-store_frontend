@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import Service from '../config/service.js';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice.js";
-import { getAuthFunction, deleteFromCart } from "../redux/slice/authSlice.js";
+import { getAuthFunction, deleteFromCart, authFailure, authStart, authSuccess } from "../redux/slice/authSlice.js";
 import { getFromLocalStorage } from '../config/localstorage.js';
 import s from "../pages/styles/BookRenderer.module.css";
 import { Toast } from '@/config/sweetAlert.js';
-
+import StripeCheckout from "react-stripe-checkout";
+import logo from "../images/book.png"
+import { NavLink } from 'react-router-dom';
 
 export default function Cart() {
     const dispatch = useDispatch();
-
     const { isLoading } = useSelector(state => state.book)
     const { auth, isLoggedIn } = useSelector(state => state.auth)
-
     const [renderToggler, setRenderToggler] = useState(false)
+
+    const stripeKey = "pk_test_51PdlyKIiH8xXNpUEUBvM5IzD8UjjyYt1s5pJLxwtRetrUkPEKcSToYaMbBxN3FVsYL0gf0qOXSEZCC5RzpSiJXPa00tCF7L7Ym"
+    const [stripeToken, setStripeToken] = useState(null)
 
     useEffect(() => {
         setRenderToggler(!renderToggler);
@@ -51,7 +52,10 @@ export default function Cart() {
                 console.log('Cart is now empty')
                 dispatch(getAuthFunction());
             }
-
+            Toast.fire({
+                icon: 'success',
+                title: 'Removed from cart'
+            })
             dispatch(getAuthFunction());
         } catch (error) {
             console.log(error)
@@ -61,7 +65,8 @@ export default function Cart() {
     const handleDeleteBookFromCart = async (userId, itemId) => {
         console.log(itemId)
         try {
-            dispatch(deleteFromCart(userId, itemId))
+            await Service.deleteBookFromCart(userId, itemId);
+
             if (getFromLocalStorage("token")) {
                 dispatch(getAuthFunction());
             }
@@ -74,10 +79,54 @@ export default function Cart() {
         }
     }
 
+    const totalAmount = auth?.basket?.reduce((total, item) => total + (item?.book?.price * item?.count), 0)
+    const products = auth?.basket?.map(item => item?.book?._id); // get all the item ids from the cart
+
+    const onToken = async (token) => {
+        setStripeToken(token);
+    };
+
+    useEffect(() => {
+        const handlePaymentFunction = async () => {
+            try {
+                dispatch(authStart())
+                const { data, message } = await Service.payment({ totalAmount, currency: "USD", source: stripeToken?.id, products });
+                dispatch(authSuccess(data));
+                console.log(data)
+                Toast.fire({ icon: 'success', title: message })
+            } catch (error) {
+                console.log(error)
+            } finally {
+                dispatch(authFailure())
+            }
+        }
+
+        if (stripeToken) handlePaymentFunction();
+    }, [stripeToken])
+
     return (
         isLoggedIn && (
             <div className={s.wrapper}>
-                <h1 className="text-center text-4xl text-slate-600">Cart</h1>
+                <div className="flex items-center justify-between">
+                    {
+                        auth?.basket?.length !== 0 &&
+                        <StripeCheckout
+                            name="Real Books"
+                            description={`Total amount: ${totalAmount?.toLocaleString()} USD`}
+                            image={logo}
+                            ComponentClass="div"
+                            token={onToken}
+                            panelLabel="To'lash"
+                            currency="USD"
+                            stripeKey={stripeKey}
+                            shippingAddress
+                        >
+                            <button className="rounded-md bg-gray-600 px-3 py-2 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                перейти к оформлению
+                            </button>
+                        </StripeCheckout>
+                    }
+                </div>
                 {
                     isLoading ? <div className={s.loaderWrapper}><div className={s.loader}></div></div> :
                         <div className={s.content_wrapper}>
@@ -88,25 +137,20 @@ export default function Cart() {
                                             <img src={item?.book?.image} alt="poster" />
                                             <h3>{item?.book?.name}</h3>
                                             <p>{item?.book?.author?.fullName}</p>
-                                            {/* <p>{book.description}</p> */}
                                             <p>{item?.book?.category}</p>
                                             <div className={s.btnwrapper}>
-                                                {/* <div className={s.like_btn}>
-                                                    <i class="fi fi-ss-heart"></i>
-                                                </div> */}
                                                 <div className={s.price}>
-                                                    ${item?.book?.price}
+                                                    ${(item?.book.price * item?.count)}
                                                 </div>
                                                 {isLoggedIn ? (
                                                     <>
-                                                        <div>
-                                                            <button onClick={() => handleAddToCart(auth._id, item?.book?._id)} className="btn btn-sm btn-primary">+</button>
-                                                            <span>{auth?.basket?.find(product => product?._id === item?._id)?.count}</span>
-                                                            <button onClick={() => handleRemoveBookFromCart(auth._id, item?._id, auth, item)} className="btn btn-sm btn-primary">-</button>
+                                                        <div className='font-semibold flex items-center'>
+                                                            <button onClick={() => handleAddToCart(auth._id, item?.book?._id)} className="bg-gray-500 text-white px-2 py-1 rounded-lg hover:bg-green-600 transition-colors duration-200">+</button>
+                                                            <span className='mx-1'>{auth?.basket?.find(product => product?._id === item?._id)?.count}</span>
+                                                            <button onClick={() => handleRemoveBookFromCart(auth._id, item?._id, auth, item)} className="bg-gray-500 text-white px-2 py-1 rounded-lg hover:bg-red-600 transition-colors duration-200">-</button>
                                                         </div>
                                                         <div className={s.edit_delete_btns}>
-                                                            {/* <button className="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></button> */}
-                                                            <button onClick={() => handleDeleteBookFromCart(auth._id, item?._id)} className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                                            <button onClick={() => handleDeleteBookFromCart(auth?._id, item?._id)} className="btn btn-sm btn-danger"><i className="fa-solid fa-trash"></i></button>
                                                         </div>
                                                     </>
                                                 ) : (<></>)}
@@ -118,7 +162,12 @@ export default function Cart() {
                         </div>
                 }
                 {
-                    !isLoading && auth?.basket?.length === 0 ? <h1 className={s.notfound}>No book found</h1> : null
+                    !isLoading && auth?.basket?.length === 0 ? (
+                        <>
+                            <h1 className={`${s.notfound} text-3xl`} >your cart is empty</h1>
+                            <p className='text-center font-semibold text-l text-gray-800 mt-2'><NavLink to="/">go Home</NavLink></p>
+                        </>
+                    ) : null
                 }
             </div>
         )
