@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import s from "../pages/styles/AddNewBook.module.css"
+import { Toast } from '@/config/sweetAlert'
 
 export default function AddNewBook({ setAddBookModal }) {
     const [newBook, setNewBook] = useState({
@@ -45,6 +46,10 @@ export default function AddNewBook({ setAddBookModal }) {
             console.log(newBook)
             await axios.post("http://localhost:3000/api/books", newBook)
             setAddBookModal(false)
+            Toast.fire({
+                icon: 'success',
+                title: 'Book added successfully'
+            })
         } catch (error) {
             console.log(error)
         }

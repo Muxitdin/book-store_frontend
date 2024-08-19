@@ -104,7 +104,7 @@ function BookRender({ books, isLoading, query }) {
                                             <div className={s.edit_delete_btns}>
                                                 <button onClick={() => handleAddToCart(auth?._id, book?._id)}><FaCartShopping /></button>
                                             </div>
-                                            {isLoggedIn && auth?.role === "admin" ? (
+                                            {isLoggedIn && auth?._id === book?.author?._id ? (
                                                 <div className={s.edit_delete_btns}>
                                                     <button className="btn btn-sm btn-warning"><i className="fa-solid fa-pen-to-square"></i></button>
                                                     <button onClick={() => handleDeleteBook(book?._id)} className="btn btn-sm btn-danger"><i className="fa-solid fa-trash"></i></button>

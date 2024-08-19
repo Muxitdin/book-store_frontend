@@ -11,7 +11,6 @@ export default function SignUp() {
         fullName: "",
         email: "",
         password: "",
-        role: ""
     })
 
 
@@ -47,8 +46,7 @@ export default function SignUp() {
                 <input onChange={getInputValue} className="w-full" name='fullName' type="text" placeholder='Full Name' />
                 <input onChange={getInputValue} className="w-full" name='email' type="email" placeholder='E-mail' />
                 <input onChange={getInputValue} className="w-full" name='password' type="password" placeholder='Password' />
-                <input onChange={getInputValue} className="w-full" name="role" type="text" placeholder="are you a user or admin" />
-                <button type="submit" className="w-full btn btn-success font-mono">Sign In</button>
+                <button type="submit" className="w-full btn btn-success font-mono">Sign Up</button>
                 <NavLink
                     to="/signin"
                     className="text-blue-400 hover:underline cursor-pointer self-end">

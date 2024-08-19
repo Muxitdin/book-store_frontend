@@ -84,7 +84,7 @@ export default function Profile() {
             <div className={s.inner_wrapper}>
                 <div>
                     <h1 className="text-5xl font-serif mb-3">Welcome to Your Profile</h1>
-                    <h3 className="text-xl  mb-5">{auth?.role}</h3>
+                    <h3 className="text-xl  mb-5">{auth?.role ? "Admin" : "User"}</h3>
                     <div className="w-3/5 flex flex-col gap-4 text-xl">
                         <div className="w-full flex justify-between gap-2">
                             <span className="text-gray-600">Full Name</span>
@@ -131,7 +131,7 @@ export default function Profile() {
                     </div>
 
                     <div className="w-3/5 mt-14 flex items-center justify-start gap-x-6">
-                        {auth?.role === "admin" && auth?.verified === true && (
+                        {auth?.role === true && auth?.verified === true && (
                             <>
                                 <button onClick={() => setAddCategoryModal(true)} type="button" className="btn btn-primary">Add Category</button>
                                 <button onClick={() => setAddBookModal(true)} type="button" className="btn btn-success">Add Book</button>
@@ -155,134 +155,3 @@ export default function Profile() {
         </div>
     )
 }
-
-
-
-
-
-
-
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import AddNewBook from "../components/AddNewBook.jsx";
-// import AddNewCategory from "../components/AddNewCategory.jsx";
-// import s from "./styles/Profile.module.css";
-// import { useSelector, useDispatch } from "react-redux";
-// import { authLogout } from "../redux/slice/authSlice.js";
-
-// export default function Prsofile() {
-//     const { auth, isLoggedIn } = useSelector(state => state.auth);
-//     const [addBookModal, setAddBookModal] = useState(false);
-//     const [addCategoryModal, setAddCategoryModal] = useState(false);
-
-//     const [isEditingFullName, setIsEditingFullName] = useState(false);
-//     const [isEditingEmail, setIsEditingEmail] = useState(false);
-//     const [fullName, setFullName] = useState(auth?.fullName || "");
-//     const [email, setEmail] = useState(auth?.email || "");
-
-//     const dispatch = useDispatch();
-//     const navigate = useNavigate();
-
-//     if (!isLoggedIn && !auth?.role) {
-//         return null;
-//     }
-
-//     const handleLogOut = () => {
-//         dispatch(authLogout());
-//         navigate("/");
-//         window.location.reload();
-//     };
-
-//     const handleEditData = (field) => {
-//         if (field === "fullName") {
-//             setIsEditingFullName(!isEditingFullName);
-//         } else if (field === "email") {
-//             setIsEditingEmail(!isEditingEmail);
-//         }
-//     };
-
-//     const handleSave = (field) => {
-//         if (field === "fullName") {
-//             // Update the user data with the new full name
-//             // You can dispatch an action to update the user data in the redux store
-//             setIsEditingFullName(false);
-//         } else if (field === "email") {
-//             // Update the user data with the new email
-//             // You can dispatch an action to update the user data in the redux store
-//             setIsEditingEmail(false);
-//         }
-//     };
-
-//     return (
-//         <div className={s.wrapper}>
-//             <div className={s.inner_wrapper}>
-//                 <div>
-//                     <h1 className="text-5xl font-serif mb-3">Welcome to Your Profile</h1>
-//                     <h3 className="text-xl mb-5">{auth?.role}</h3>
-//                     <div className="w-3/5 flex flex-col gap-4 text-xl">
-//                         <div className="w-full flex justify-between gap-2 items-center">
-//                             <span className="text-gray-600">Full Name</span>
-//                             <div className="flex-grow border-b-2 border-b-gray-600 border-dashed"></div>
-//                             {isEditingFullName ? (
-//                                 <>
-//                                     <input
-//                                         type="text"
-//                                         value={fullName}
-//                                         onChange={(e) => setFullName(e.target.value)}
-//                                         className="border px-2 py-1"
-//                                     />
-//                                     <button onClick={() => handleSave("fullName")} className="btn btn-primary ml-2">Save</button>
-//                                 </>
-//                             ) : (
-//                                 <>
-//                                     <span className="text-gray-900">{fullName}</span>
-//                                     <button onClick={() => handleEditData("fullName")} className="btn btn-secondary ml-2">Edit</button>
-//                                 </>
-//                             )}
-//                         </div>
-
-//                         <div className="w-full flex justify-between gap-2 items-center">
-//                             <span className="text-gray-600">E-mail</span>
-//                             <div className="flex-grow border-b-2 border-b-gray-600 border-dashed"></div>
-//                             {isEditingEmail ? (
-//                                 <>
-//                                     <input
-//                                         type="email"
-//                                         value={email}
-//                                         onChange={(e) => setEmail(e.target.value)}
-//                                         className="border px-2 py-1"
-//                                     />
-//                                     <button onClick={() => handleSave("email")} className="btn btn-primary ml-2">Save</button>
-//                                 </>
-//                             ) : (
-//                                 <>
-//                                     <span className="text-gray-900">{email}</span>
-//                                     <button onClick={() => handleEditData("email")} className="btn btn-secondary ml-2">Edit</button>
-//                                 </>
-//                             )}
-//                         </div>
-//                     </div>
-
-//                     <div className="w-3/5 mt-14 flex items-center justify-start gap-x-6">
-//                         {auth?.role === "admin" && (
-//                             <>
-//                                 <button onClick={() => setAddCategoryModal(true)} type="button" className="btn btn-primary">Add Category</button>
-//                                 <button onClick={() => setAddBookModal(true)} type="button" className="btn btn-success">Add Book</button>
-//                             </>
-//                         )}
-//                         <button
-//                             onClick={handleLogOut}
-//                             type="button"
-//                             className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-//                         >
-//                             Log Out
-//                         </button>
-//                     </div>
-//                 </div>
-
-//                 {addBookModal && <AddNewBook setAddBookModal={setAddBookModal} />}
-//                 {addCategoryModal && <AddNewCategory setAddCategoryModal={setAddCategoryModal} />}
-//             </div>
-//         </div>
-//     );
-// }

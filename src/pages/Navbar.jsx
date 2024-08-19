@@ -97,7 +97,7 @@ export default function Navbar({ setQuery }) {
             </nav>
             {location.pathname === "/" && (
                 <div className="mt-6 px-32 flex gap-2">
-                    {isLoggedIn && auth?.role === "admin" ? (
+                    {isLoggedIn && auth?.role === true ? (
                         <button onClick={toggleEditButtons} type="button" className="btn"><i className="fa-solid fa-pen text-m"></i></button>
                     ) : (null)}
                     <ul className="flex flex-row gap-4 ">
