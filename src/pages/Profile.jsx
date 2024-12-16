@@ -33,7 +33,6 @@ export default function Profile() {
     }, [auth])
     
 
-
     if (!isLoggedIn && !auth?.role) {
         return null
     }
@@ -60,8 +59,7 @@ export default function Profile() {
             setIsEditingFullName(false);
         } else if (field === "email") {
             dispatch(updateUser(auth?._id, { type: "email", value: email }))
-            // Update the user data with the new email
-            // You can dispatch an action to update the user data in the redux store
+            
             setIsEditingEmail(false);
         }
     };

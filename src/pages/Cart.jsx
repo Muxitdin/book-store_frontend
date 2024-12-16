@@ -106,14 +106,13 @@ export default function Cart() {
 
     return (
         isLoggedIn && (
-            <div className={s.wrapper}>
+            <div className={`${s.wrapper} h-[calc(100vh-197px)]`}>
                 <div className="flex items-center justify-between">
                     {
                         auth?.basket?.length !== 0 &&
                         <StripeCheckout
-                            name="Real Books"
+                            name="Book Store"
                             description={`Total amount: ${totalAmount?.toLocaleString()} USD`}
-                            image={logo}
                             ComponentClass="div"
                             token={onToken}
                             panelLabel="To'lash"
@@ -140,7 +139,7 @@ export default function Cart() {
                                             <p>{item?.book?.category}</p>
                                             <div className={s.btnwrapper}>
                                                 <div className={s.price}>
-                                                    ${(item?.book.price * item?.count)}
+                                                    ${(item?.book?.price * item?.count)}
                                                 </div>
                                                 {isLoggedIn ? (
                                                     <>
@@ -164,8 +163,8 @@ export default function Cart() {
                 {
                     !isLoading && auth?.basket?.length === 0 ? (
                         <>
-                            <h1 className={`${s.notfound} text-3xl`} >your cart is empty</h1>
-                            <p className='text-center font-semibold text-l text-gray-800 mt-2'><NavLink to="/">go Home</NavLink></p>
+                            <h1 className={`${s.notfound} text-4xl font-semibold text-[#666]`} >your cart is empty</h1>
+                            <p className='text-center font-semibold text-l text-gray-800 mt-2 hover:underline'><NavLink to="/">go Home</NavLink></p>
                         </>
                     ) : null
                 }

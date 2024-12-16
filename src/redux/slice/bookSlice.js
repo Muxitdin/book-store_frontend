@@ -34,5 +34,5 @@ const BookSlice = createSlice({
     },
 });
 
-export const { bookStart, bookSuccess, bookFailure } = BookSlice.actions;
+export const { bookStart, bookSuccess, bookFailure, deleteBookSuccess } = BookSlice.actions;
 export default BookSlice.reducer;

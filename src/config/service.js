@@ -10,7 +10,6 @@ api.interceptors.request.use((req) => {
 });
 
 const Service = {
-    // books
     getAuth: async () => {
         const { data } = await api.get('/api/auth');
         return data;

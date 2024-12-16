@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import Service from '../config/service.js';
-import { bookFailure, bookStart, bookSuccess } from "../redux/slice/bookSlice";
+import { bookFailure, bookStart, bookSuccess, deleteBookSuccess } from "../redux/slice/bookSlice";
 import { getAuthFunction } from "../redux/slice/authSlice.js";
 import { useDispatch, useSelector } from 'react-redux';
 import s from "../pages/styles/BookRenderer.module.css";
@@ -27,7 +27,7 @@ function BookRender({ books, isLoading, query }) {
             }
         }
         getAllBooks();
-    }, [])
+    }, [auth, dispatch])
 
     const handleAddToCart = async (userId, bookId) => {
         if (isLoggedIn) {
@@ -49,21 +49,11 @@ function BookRender({ books, isLoading, query }) {
         }
     }
 
-    const handleDeleteBook = async (id) => {
+    const handleDeleteBook = async (id, auth) => {
         try {
             await Service.deleteBook(id);
             if (getFromLocalStorage("token")) {
-                const getAllBooks = async () => {
-                    dispatch(bookStart());
-                    try {
-                        const data = await Service.getAllBooks();
-                        dispatch(bookSuccess({ type: "b", data }));
-                    } catch (error) {
-                        dispatch(bookFailure());
-                        console.error('Error fetching books:', error);
-                    }
-                }
-                getAllBooks();
+                dispatch(getAuthFunction());
             }
             Toast.fire({
                 icon: 'success',
@@ -77,7 +67,7 @@ function BookRender({ books, isLoading, query }) {
 
     return (
         <div className={s.wrapper}>
-            <h1 className="text-center text-4xl text-slate-600">All Books</h1>
+            <h1 className="text-center text-4xl font-semibold text-[#666]">All Books</h1>
             {
                 isLoading ? <div className={s.loaderWrapper}><div className={s.loader}></div></div> :
                     <div className={s.content_wrapper}>
@@ -107,7 +97,7 @@ function BookRender({ books, isLoading, query }) {
                                             {isLoggedIn && auth?._id === book?.author?._id ? (
                                                 <div className={s.edit_delete_btns}>
                                                     <button className="btn btn-sm btn-warning"><i className="fa-solid fa-pen-to-square"></i></button>
-                                                    <button onClick={() => handleDeleteBook(book?._id)} className="btn btn-sm btn-danger"><i className="fa-solid fa-trash"></i></button>
+                                                    <button onClick={() => handleDeleteBook(book?._id, auth)} className="btn btn-sm btn-danger"><i className="fa-solid fa-trash"></i></button>
                                                 </div>
                                             ) : (<></>)}
                                         </div>

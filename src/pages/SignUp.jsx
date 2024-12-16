@@ -3,9 +3,16 @@ import { useNavigate, NavLink } from "react-router-dom"
 import axios from "axios"
 import { saveToLocalStorage } from "../config/localstorage.js"
 import s from "./styles/SignUp.module.css"
+import { useSelector } from "react-redux"
+import { Toast } from '@/config/sweetAlert.js'
 
 export default function SignUp() {
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+    const { isLoggedIn } = useSelector(state => state.auth)
+
+    if (isLoggedIn) {
+        navigate("/profile")
+    }
 
     const [newUser, setNewUser] = useState({
         fullName: "",
@@ -15,20 +22,18 @@ export default function SignUp() {
 
 
     const handleCreateNewUser = async (e) => {
-        e.preventDefault();
-        console.log(newUser);
+        e.preventDefault()
+        console.log(newUser)
         try {
-            const { data } = await axios.post("http://localhost:3000/api/auth/register", newUser);
-            console.log(data)
-            const token = data.token;
-            const user = data.user;
-            console.log("Token received:", token);
-            saveToLocalStorage("token", token);
-            // saveToLocalStorage("user", JSON.stringify(user));
-            navigate("/verification");
-            document.location.reload();
+            const { data } = await axios.post("http://localhost:3000/api/auth/register", newUser)
+            Toast.fire({
+                icon: 'success',
+                title: data?.message
+            })
+            navigate("/verification")
         } catch (error) {
-            console.log("Error creating user:", error);
+            console.log(error)
+            console.log("Error creating user:", error.response?.data.message || error.message)
         }
     }
 

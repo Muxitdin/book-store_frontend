@@ -59,11 +59,11 @@ export default function Navbar({ setQuery }) {
     return (
         <>
             <nav className="bg-white shadow-lg relative z-20 px-32">
-                <div className="uppercase flex items-center justify-between py-2 text-sm text-gray-500" >
+                <div className="flex items-center justify-between text-sm text-gray-500" >
                     <div className="flex items-center justify-between gap-4 cursor-pointer w-full">
                         <ul className="navbar">
                             <div className="container-fluid">
-                                <a href="/" className={s.logo + " navbar-brand font-mono font-bold text-xl text-black"}><img src={logo} className="mr-2 w-[2rem] h-[2rem]" alt="logo" />REAL<span>BOOKS</span></a>
+                                <a href="/" className={s.logo + " navbar-brand"}><img src={logo} className="min-w-14 max-w-14 h-auto" alt="logo" /></a>
                             </div>
                         </ul>
                         <ul className="flex items-center gap-4 cursor-pointer">
@@ -71,21 +71,21 @@ export default function Navbar({ setQuery }) {
                                 <input onChange={handleInputChange} className="min-w-[300px] border-2 p-1.5 outline-gray-800" type="search" placeholder="Search" aria-label="Search" />
                             </li>
                             <li>
-                                <NavLink className="flex items-center gap-1 text-black" to={isLoggedIn ? "/profile" : "/signin"}>
+                                <NavLink className="flex items-center gap-1 text-black normal-case font-medium text-[17px]" to={isLoggedIn ? "/profile" : "/signin"}>
                                     {location.pathname === "/profile" ? <IoPerson className="text-xl" /> : <IoPersonOutline className="text-xl" />}
                                     <span>{auth?.fullName?.length > 8 ? auth?.fullName?.slice(0, 8) + "..." : auth?.fullName || "LogIn"}</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink className="flex items-center gap-1 text-black" to={isLoggedIn ? "/wishlist" : "/signin"}>
+                                <NavLink className="flex items-center gap-1 text-black font-medium text-[17px]" to={isLoggedIn ? "/wishlist" : "/signin"}>
                                     {location.pathname === "/wishlist" ? <GoHeartFill className="text-xl" /> : <GoHeart className="text-xl" />}
                                     <span>Wishlist</span>
                                 </NavLink>
                             </li>
 
                             <li>
-                                <NavLink className="flex items-center gap-1 text-black" to={isLoggedIn ? "/cart" : "/signin"}>
+                                <NavLink className="flex items-center gap-1 text-black font-medium text-[17px]" to={isLoggedIn ? "/cart" : "/signin"}>
                                     {location.pathname === "/cart" ? <IoCart className="text-xl" /> : <IoCartOutline className="text-xl" />}
                                     <span>Cart</span>
                                     <span className="size-5 flex items-center justify-center rounded-full text-white bg-gray-800">{auth?.basket?.length || 0}</span>

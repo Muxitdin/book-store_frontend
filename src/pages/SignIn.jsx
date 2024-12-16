@@ -1,13 +1,20 @@
 import { React, useState } from "react";
-import axios from "axios"
+import { useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom"
 import { saveToLocalStorage } from "../config/localstorage.js"
-import s from "./styles/SignUp.module.css"
+import axios from "axios"
 import Service from "../config/service.js";
 import Swal from "sweetalert2";
+import s from "./styles/SignUp.module.css"
+import { Toast } from '@/config/sweetAlert.js'
 
 export default function SignIn() {
     const navigate = useNavigate();
+    const { isLoggedIn } = useSelector(state => state.auth);
+
+    if (isLoggedIn) {
+        navigate("/profile")
+    }
 
     const [newUser, setNewUser] = useState({
         email: "",
@@ -19,15 +26,13 @@ export default function SignIn() {
         console.log(newUser)
         try {
             const { data } = await axios.post("http://localhost:3000/api/auth/login", newUser);
-            console.log(data)
             const token = data.token;
-            const user = data.user;
-            console.log("Token received:", token);
             saveToLocalStorage("token", token);
             navigate("/profile")
             document.location.reload();
         } catch (error) {
             console.log(error);
+            Toast.fire({ icon: "error", title: error?.response?.data?.message || error.message })
         }
     }
 
